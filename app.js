@@ -63,6 +63,7 @@ passport.use(new MeetupStrategy({
   function(token, tokenSecret, profile, done) {
     // asynchronous verification, for effect...
     process.nextTick(function () {
+      console.log("Verification Log: ", { token, tokenSecret, profile });
       let user = new UserModel;
       user.token = token;
       user.tokenSecret = tokenSecret;
@@ -109,7 +110,7 @@ app.get('/auth/meetup',
 app.get('/auth/meetup/callback', 
   passport.authenticate('meetup', { failureRedirect: '/login' }),
   function(req, res) {
-    res.redirect('/account');
+    res.redirect('/');
   });
 
 app.get('/logout', function(req, res){
