@@ -4,11 +4,7 @@ const express = require('express'),
       MeetupStrategy = require('passport-meetup').Strategy,
       mongoose = require('mongoose'),
       Schema = mongoose.Schema,
-      UserSchema = new Schema({
-        token: any, 
-        tokenSecret: any, 
-        profile: any
-      }),
+      UserSchema = new Schema({ any: Object }),
       UserModel = mongoose.model('Users', UserSchema);
 
 let MEETUP_KEY = process.env.MEETUP_KEY;
@@ -122,7 +118,7 @@ app.get('/logout', function(req, res){
   res.redirect('/');
 });
 
-app.listen(3000);
+app.listen(process.env.PORT || 3000);
 
 
 // Simple route middleware to ensure user is authenticated.
