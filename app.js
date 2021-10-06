@@ -6,7 +6,7 @@ const express = require('express'),
       methodOverride = require('method-override'),
       session = require('express-session'),
       util = require('util'), 
-      MeetupStrategy = require('passport-meetup').Strategy,
+      MeetupStrategy = require('passport-meetup-oauth2').Strategy,
       mongoose = require('mongoose'),
       Schema = mongoose.Schema,
       UserSchema = new Schema({ any: Object }),
@@ -55,8 +55,8 @@ passport.deserializeUser(function(obj, done) {
 //   credentials (in this case, a token, tokenSecret, and Meetup profile), and
 //   invoke a callback with a user object.
 passport.use(new MeetupStrategy({
-    consumerKey: MEETUP_KEY,
-    consumerSecret: MEETUP_SECRET,
+    clientID: MEETUP_KEY,
+    clientSecret: MEETUP_SECRET,
     // callbackURL: "https://meetup.compiledmcr.com/auth/meetup/callback"
     callbackURL: "https://compiledmcr-meetup-auth.herokuapp.com/auth/meetup/callback"
   },
