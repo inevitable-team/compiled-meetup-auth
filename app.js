@@ -1,5 +1,10 @@
 const express = require('express'), 
       passport = require('passport'), 
+      morgan = require('morgan'),
+      cookieParser = require('cookie-parser'),
+      bodyParser = require('body-parser'),
+      methodOverride = require('method-override'),
+      session = require('express-session'),
       util = require('util'), 
       MeetupStrategy = require('passport-meetup').Strategy,
       mongoose = require('mongoose'),
@@ -7,8 +12,28 @@ const express = require('express'),
       UserSchema = new Schema({ any: Object }),
       UserModel = mongoose.model('Users', UserSchema);
 
+require('dotenv').config();
 let MEETUP_KEY = process.env.MEETUP_KEY;
 let MEETUP_SECRET = process.env.MEETUP_SECRET;
+
+let app = express();
+
+// configure Express
+app.set('views', __dirname + '/views');
+app.set('view engine', 'ejs');
+// app.use(express.logger()); // Morgan
+app.use(cookieParser());
+app.use(bodyParser.json());
+app.use(methodOverride('X-HTTP-Method-Override'));
+app.use(session({ secret: 'keyboard cat', cookie: { secure: true }, resave: true, saveUninitialized: true }));
+// Initialize Passport!  Also use passport.session() middleware, to support
+// persistent login sessions (recommended).
+app.use(passport.initialize());
+app.use(passport.session());
+// app.use(app.router);
+app.use(express.static(__dirname + '/public'));
+// Initiate MongoDB
+mongoose.connect(process.env.MONGODB_CONNECTION);
 
 // Passport session setup.
 //   To support persistent login sessions, Passport needs to be able to
@@ -24,7 +49,6 @@ passport.serializeUser(function(user, done) {
 passport.deserializeUser(function(obj, done) {
   done(null, obj);
 });
-
 
 // Use the MeetupStrategy within Passport.
 //   Strategies in passport require a `verify` function, which accept
@@ -52,31 +76,6 @@ passport.use(new MeetupStrategy({
     });
   }
 ));
-
-
-
-
-let app = express.createServer();
-
-// configure Express
-app.configure(async function() {
-  app.set('views', __dirname + '/views');
-  app.set('view engine', 'ejs');
-  app.use(express.logger());
-  app.use(express.cookieParser());
-  app.use(express.bodyParser());
-  app.use(express.methodOverride());
-  app.use(express.session({ secret: 'keyboard cat' }));
-  // Initialize Passport!  Also use passport.session() middleware, to support
-  // persistent login sessions (recommended).
-  app.use(passport.initialize());
-  app.use(passport.session());
-  app.use(app.router);
-  app.use(express.static(__dirname + '/public'));
-  // Initiate MongoDB
-  await mongoose.connect(process.env.MONGODB_CONNECTION);
-});
-
 
 app.get('/', function(req, res){
   res.render('index', { user: req.user });
