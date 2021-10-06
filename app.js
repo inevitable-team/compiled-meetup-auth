@@ -3,8 +3,8 @@ var express = require('express')
   , util = require('util')
   , MeetupStrategy = require('passport-meetup').Strategy;
 
-var MEETUP_KEY = "--insert-meetup-key-here--"
-var MEETUP_SECRET = "--insert-meetup-secret-here--";
+var MEETUP_KEY = process.env.MEETUP_KEY;
+var MEETUP_SECRET = process.env.MEETUP_SECRET;
 
 
 // Passport session setup.
