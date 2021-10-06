@@ -1,11 +1,18 @@
-var express = require('express')
-  , passport = require('passport')
-  , util = require('util')
-  , MeetupStrategy = require('passport-meetup').Strategy;
+const express = require('express'), 
+      passport = require('passport'), 
+      util = require('util'), 
+      MeetupStrategy = require('passport-meetup').Strategy,
+      mongoose = require('mongoose'),
+      Schema = mongoose.Schema,
+      UserSchema = new Schema({
+        token: any, 
+        tokenSecret: any, 
+        profile: any
+      }),
+      UserModel = mongoose.model('Users', UserSchema);
 
-var MEETUP_KEY = process.env.MEETUP_KEY;
-var MEETUP_SECRET = process.env.MEETUP_SECRET;
-
+let MEETUP_KEY = process.env.MEETUP_KEY;
+let MEETUP_SECRET = process.env.MEETUP_SECRET;
 
 // Passport session setup.
 //   To support persistent login sessions, Passport needs to be able to
@@ -35,7 +42,11 @@ passport.use(new MeetupStrategy({
   function(token, tokenSecret, profile, done) {
     // asynchronous verification, for effect...
     process.nextTick(function () {
-      
+      let user = new UserModel;
+      user.token = token;
+      user.tokenSecret = tokenSecret;
+      user.profile = profile;
+      user.save();
       // To keep the example simple, the user's Meetup profile is returned to
       // represent the logged-in user.  In a typical application, you would want
       // to associate the Meetup account with a user record in your database,
@@ -48,10 +59,10 @@ passport.use(new MeetupStrategy({
 
 
 
-var app = express.createServer();
+let app = express.createServer();
 
 // configure Express
-app.configure(function() {
+app.configure(async function() {
   app.set('views', __dirname + '/views');
   app.set('view engine', 'ejs');
   app.use(express.logger());
@@ -65,6 +76,8 @@ app.configure(function() {
   app.use(passport.session());
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
+  // Initiate MongoDB
+  await mongoose.connect(process.env.MONGODB_CONNECTION);
 });
 
 
