@@ -60,9 +60,10 @@ passport.use(new MeetupStrategy({
     // callbackURL: "https://meetup.compiledmcr.com/auth/meetup/callback"
     callbackURL: "https://compiledmcr-meetup-auth.herokuapp.com/auth/meetup/callback"
   },
-  function(token, tokenSecret, profile, done) {
+  function(req, token, tokenSecret, profile, done) {
     // asynchronous verification, for effect...
     process.nextTick(function () {
+      console.log({ req });
       console.log("Verification Log: ", { token, tokenSecret, profile });
       let user = new UserModel;
       user.token = token;
