@@ -37,7 +37,8 @@ passport.deserializeUser(function(obj, done) {
 passport.use(new MeetupStrategy({
     consumerKey: MEETUP_KEY,
     consumerSecret: MEETUP_SECRET,
-    callbackURL: "https://meetup.compiledmcr.com/auth/meetup/callback"
+    // callbackURL: "https://meetup.compiledmcr.com/auth/meetup/callback"
+    callbackURL: "https://compiledmcr-meetup-auth.herokuapp.com/auth/meetup/callback"
   },
   function(token, tokenSecret, profile, done) {
     // asynchronous verification, for effect...
