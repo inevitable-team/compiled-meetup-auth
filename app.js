@@ -109,7 +109,7 @@ app.get('/auth/meetup',
 app.get('/auth/meetup/callback', 
   passport.authenticate('meetup', { failureRedirect: '/login' }),
   function(req, res) {
-    res.redirect('/');
+    res.redirect('/account');
   });
 
 app.get('/logout', function(req, res){
